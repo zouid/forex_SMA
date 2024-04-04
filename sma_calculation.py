@@ -7,11 +7,13 @@ from tqdm import tqdm  # Import tqdm
 def fetch_exchange_rates():
     currency_rates = CurrencyRates()
     end_date = datetime.now()
-    start_date = end_date - timedelta(days=150)  # Increase days to account for weekends/holidays
+    start_date = end_date - timedelta(days=150)  # Adjust as needed to ensure 100 rates
+    total_days = (end_date - start_date).days
+
     rates = []
 
-    # Wrap the date range generation in tqdm for a progress bar
-    for single_date in tqdm((start_date + timedelta(n) for n in range(int ((end_date - start_date).days))), desc="Fetching rates"):
+    # Adding total=total_days to tqdm to ensure the progress bar knows the total count
+    for single_date in tqdm((start_date + timedelta(n) for n in range(total_days)), total=total_days, desc="Fetching rates"):
         try:
             rate = currency_rates.get_rate('EUR', 'USD', single_date)
             rates.append(rate)
